@@ -1,4 +1,4 @@
-const API_URL = "https://user-mgmt-b.vercel.app/";
+const API_URL = "https://user-mgmt-b.vercel.app/api";
 
 export const getToken = () => localStorage.getItem("token");
 
