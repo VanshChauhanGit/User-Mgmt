@@ -9,28 +9,28 @@ import recordsRoutes from "./routes/records.js";
 const app = express();
 connectDB();
 
-app.use(helmet());
-app.use(express.json());
-
 const FRONTEND_ORIGIN =
   process.env.FRONTEND_ORIGIN || "https://user-mgmt-f.vercel.app";
 
 const corsOptions = {
   origin: FRONTEND_ORIGIN,
-  methods: "GET,POST,PUT,DELETE,OPTIONS", // Explicitly allow methods
-  allowedHeaders: "Content-Type,Authorization", // Explicitly allow headers
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
   credentials: true,
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // preflight
 
-app.options("*", cors(corsOptions));
+app.use(helmet());
+app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/records", recordsRoutes);
 
-// simple health check
+// Health check
 app.get("/", (req, res) => res.send("API is running"));
 
 const PORT = process.env.PORT || 3000;
