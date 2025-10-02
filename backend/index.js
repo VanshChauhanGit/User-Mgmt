@@ -6,7 +6,6 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
 import recordsRoutes from "./routes/records.js";
 
-
 const app = express();
 connectDB();
 
@@ -14,7 +13,8 @@ app.use(helmet());
 app.use(express.json());
 
 // CORS - allow your frontend origin
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
+const FRONTEND_ORIGIN =
+  process.env.FRONTEND_ORIGIN || "https://user-mgmt-f.vercel.app/";
 app.use(cors({ origin: FRONTEND_ORIGIN }));
 
 // Routes
