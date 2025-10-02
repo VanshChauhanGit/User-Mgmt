@@ -9,13 +9,21 @@ import recordsRoutes from "./routes/records.js";
 const app = express();
 connectDB();
 
-const FRONTEND_ORIGIN =
-  process.env.FRONTEND_ORIGIN || "https://user-mgmt-f.vercel.app";
+const allowedOrigins = [
+  "http://localhost:5173", // dev frontend
+  "https://user-mgmt-f.vercel.app", // deployed frontend
+];
 
 const corsOptions = {
-  origin: FRONTEND_ORIGIN,
-  methods: "GET,POST,PUT,DELETE,OPTIONS",
-  allowedHeaders: "Content-Type,Authorization",
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error("CORS not allowed for this origin"), false);
+    }
+    return callback(null, true);
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 200,
 };
