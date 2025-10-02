@@ -12,10 +12,19 @@ connectDB();
 app.use(helmet());
 app.use(express.json());
 
-// CORS - allow your frontend origin
 const FRONTEND_ORIGIN =
-  process.env.FRONTEND_ORIGIN || "https://user-mgmt-f.vercel.app/";
-app.use(cors({ origin: FRONTEND_ORIGIN }));
+  process.env.FRONTEND_ORIGIN || "https://user-mgmt-f.vercel.app";
+
+const corsOptions = {
+  origin: FRONTEND_ORIGIN,
+  methods: "GET,POST,PUT,DELETE,OPTIONS", // Explicitly allow methods
+  allowedHeaders: "Content-Type,Authorization", // Explicitly allow headers
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
 
 // Routes
 app.use("/api/auth", authRoutes);
