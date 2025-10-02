@@ -40,7 +40,7 @@ export default function Login() {
     try {
       const token = credentialResponse.credential;
       const res = await fetch(
-        "https://https://user-mgmt-b.vercel.app/api/auth/google-login",
+        "https://user-mgmt-b.vercel.app/api/auth/google-login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
