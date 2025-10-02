@@ -2,11 +2,52 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
-
 import User from "../models/User.js";
 import { loginValidation, registerValidation } from "../utils/validators.js";
+import { OAuth2Client } from "google-auth-library";
 
 const router = express.Router();
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+// 🌐 Google Login
+router.post("/google-login", async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    // Verify Google token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    // Extract user info
+    const { sub, email, name } = payload;
+
+    // Check if user exists in DB
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        username: email.split("@")[0],
+        password: sub, // not used, just placeholder
+      });
+    }
+
+    const appToken = jwt.sign(
+      { user: { id: user._id } },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({ token: appToken, user });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ message: "Google login failed", error: err.message });
+  }
+});
 
 // REGISTER
 router.post("/register", registerValidation, async (req, res) => {
