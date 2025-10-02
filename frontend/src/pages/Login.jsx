@@ -39,11 +39,14 @@ export default function Login() {
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const token = credentialResponse.credential;
-      const res = await fetch("http://localhost:3000/api/auth/google-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      });
+      const res = await fetch(
+        "https://https://user-mgmt-b.vercel.app/api/auth/google-login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        }
+      );
       const data = await res.json();
       if (data.token) {
         localStorage.setItem("token", data.token);
